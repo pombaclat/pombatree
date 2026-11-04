@@ -13,17 +13,17 @@ A simple command-line tool written in C++ to analyze directory sizes and find th
 
 ### Calculate directory size
 ```bash
-./filesize size /path/to/directory
+./pombatree size /path/to/directory
 ```
 
 ### Find the biggest files
 ```bash
-./filesize biggest /path/to/directory
+./pombatree biggest /path/to/directory
 ```
 
 ### Show the 5 biggest files
 ```bash
-./filesize biggest /path/to/directory 5
+./pombatree biggest /path/to/directory 5
 ```
 
 ## Compilation
