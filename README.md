@@ -31,7 +31,7 @@ A simple command-line tool written in C++ to analyze directory sizes and find th
 Requires a C++17-compatible compiler.
 
 ```bash
-g++ -std=c++17 main.cpp -o filesize
+c++ main.cpp -o pombatree
 ```
 
 ## Technologies
