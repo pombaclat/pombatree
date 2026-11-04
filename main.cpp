@@ -1,119 +1,40 @@
-#include <algorithm>
-#include <filesystem>
-#include <iomanip>
-#include <iostream>
-#include <sstream>
-#include <string>
-#include <vector>
+# Pombatree (File Size CLI)
 
-namespace fs = std::filesystem;
+A simple command-line tool written in C++ to analyze directory sizes and find the largest files.
 
-std::string calculateSize(double bytes);
+## Features
+- Calculate the total size of a directory recursively.
+- Find the biggest files in a directory.
+- Choose how many of the largest files to display.
+- Automatically convert bytes into KB, MB and GB.
+- Skip directories with permission restrictions.
 
-int main(int argc, char *argv[]) {
+## Usage
 
-  if (argc == 1) {
-    std::cout << "Checkout Docs at https://example.com";
-    return 0;
-  }
+### Calculate directory size
+```bash
+./filesize size /path/to/directory
+```
 
-  std::string command = argv[1];
+### Find the biggest files
+```bash
+./filesize biggest /path/to/directory
+```
 
-  if (command == "size") {
+### Show the 5 biggest files
+```bash
+./filesize biggest /path/to/directory 5
+```
 
-    switch (argc) {
+## Compilation
 
-    case 2:
-      std::cout << "Please enter a valid path";
-      break;
+Requires a C++17-compatible compiler.
 
-    case 3: {
-      std::string path = argv[2];
-      double totalSize = 0;
+```bash
+g++ -std=c++17 main.cpp -o filesize
+```
 
-      for (const auto &entry : fs::recursive_directory_iterator(path)) {
-
-        if (entry.is_regular_file()) {
-          totalSize += entry.file_size();
-        }
-      }
-
-      std::cout << "Total size: " << calculateSize(totalSize) << '\n';
-
-      break;
-    }
-    }
-  }
-
-  if (command == "biggest") {
-
-    if (argc < 3) {
-      std::cout << "Please enter a valid path\n";
-      return 0;
-    }
-
-    std::string path = argv[2];
-
-    if (!fs::exists(path)) {
-      std::cout << "Path does not exist\n";
-      return 0;
-    }
-
-    int amount = 1;
-
-    if (argc >= 4) {
-      amount = std::stoi(argv[3]);
-    }
-
-    std::vector<std::pair<double, std::string>> files;
-
-    try {
-      for (const auto &entry : fs::recursive_directory_iterator(
-               path, fs::directory_options::skip_permission_denied)) {
-
-        if (entry.is_regular_file()) {
-          files.push_back(
-              {static_cast<double>(entry.file_size()), entry.path().string()});
-        }
-      }
-    } catch (const fs::filesystem_error &e) {
-      std::cout << "Filesystem error: " << e.what() << '\n';
-    }
-
-    std::sort(files.begin(), files.end(),
-              [](const auto &a, const auto &b) { return a.first > b.first; });
-
-    amount = std::min(amount, static_cast<int>(files.size()));
-
-    for (int i = 0; i < amount; i++) {
-      std::cout << i + 1 << ". " << calculateSize(files[i].first) << " - "
-                << files[i].second << '\n';
-    }
-  }
-}
-
-std::string calculateSize(double bytes) {
-
-  double size = bytes;
-  std::string unit = "B";
-
-  if (size >= 1024) {
-    size /= 1024;
-    unit = "KB";
-  }
-
-  if (size >= 1024) {
-    size /= 1024;
-    unit = "MB";
-  }
-
-  if (size >= 1024) {
-    size /= 1024;
-    unit = "GB";
-  }
-
-  std::ostringstream result;
-  result << std::fixed << std::setprecision(2) << size << unit;
-
-  return result.str();
-}
+## Technologies
+- C++17
+- Filesystem library
+- STL (`vector`, `algorithm`, `sstream`)
